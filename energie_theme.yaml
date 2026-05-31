@@ -1,0 +1,56 @@
+# Energie Theme – Dunkelblau/Teal für Samsung Tab A9+
+# Einbinden in configuration.yaml:
+#   frontend:
+#     themes: !include_dir_merge_named themes/
+# Datei speichern als: config/themes/energie_theme.yaml
+
+energie_dunkel:
+  # Hintergrund & Oberflächen
+  primary-background-color: "#0a1628"
+  secondary-background-color: "#0d2137"
+  card-background-color: "#0f2d3d"
+  divider-color: "rgba(0, 200, 200, 0.15)"
+
+  # Akzentfarben (Teal/Cyan)
+  primary-color: "#00bcd4"
+  accent-color: "#00e5ff"
+
+  # Text
+  primary-text-color: "#e0f7fa"
+  secondary-text-color: "#80cbc4"
+  disabled-text-color: "#455a64"
+
+  # Sidebar
+  sidebar-background-color: "#060f1e"
+  sidebar-text-color: "#80deea"
+  sidebar-selected-text-color: "#00e5ff"
+  sidebar-selected-background-color: "rgba(0, 229, 255, 0.12)"
+  sidebar-icon-color: "#4dd0e1"
+  sidebar-selected-icon-color: "#00e5ff"
+
+  # Header
+  app-header-background-color: "#060f1e"
+  app-header-text-color: "#00e5ff"
+
+  # Karten
+  ha-card-border-radius: "12px"
+  ha-card-box-shadow: "0 4px 20px rgba(0, 229, 255, 0.08)"
+  ha-card-border-color: "rgba(0, 200, 200, 0.2)"
+
+  # Gauge / Graphen
+  label-badge-background-color: "#0f2d3d"
+  label-badge-text-color: "#00e5ff"
+  label-badge-border-color: "#00bcd4"
+
+  # Switch / Toggle
+  switch-checked-color: "#00bcd4"
+  switch-checked-button-color: "#00e5ff"
+  switch-checked-track-color: "rgba(0, 188, 212, 0.4)"
+
+  # Energie spezifisch
+  energy-grid-consumption-color: "#ef5350"
+  energy-grid-return-color: "#26a69a"
+  energy-solar-color: "#ffca28"
+  energy-battery-in-color: "#42a5f5"
+  energy-battery-out-color: "#00e5ff"
+  energy-home-color: "#80cbc4"

@@ -6,6 +6,9 @@ views:
   - title: Energie
     path: energie
     icon: mdi:lightning-bolt
+    # Dunkles Blau-Teal — energetisch, AMOLED-freundlich, gut für Tablet
+    background: "linear-gradient(135deg, #0a1628 0%, #0d2137 40%, #0a2e2e 100%)"
+    theme: Backend-selected
     badges: []
     cards:
 
