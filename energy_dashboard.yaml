@@ -1,0 +1,143 @@
+title: Energie Übersicht
+path: energie
+icon: mdi:solar-power
+type: custom:grid-layout
+views:
+  - title: Energie
+    path: energie
+    icon: mdi:lightning-bolt
+    # Dunkles Blau-Teal — energetisch, AMOLED-freundlich, gut für Tablet
+    background: "linear-gradient(135deg, #0a1628 0%, #0d2137 40%, #0a2e2e 100%)"
+    theme: Backend-selected
+    badges: []
+    cards:
+
+      # ─── LIVE ÜBERBLICK ───────────────────────────────────────────
+      - type: horizontal-stack
+        cards:
+          - type: gauge
+            name: Netzbezug
+            entity: sensor.smart_meter_netzbezug
+            unit: W
+            min: 0
+            max: 5000
+            needle: true
+            severity:
+              green: 0
+              yellow: 1500
+              red: 3000
+
+          - type: gauge
+            name: Solarleistung
+            entity: sensor.solarbank_3_e2700_pro_solarleistung
+            unit: W
+            min: 0
+            max: 2700
+            needle: true
+            severity:
+              green: 500
+              yellow: 100
+              red: 0
+
+          - type: gauge
+            name: Batterie
+            entity: sensor.solarbank_3_e2700_pro_ladestand
+            unit: "%"
+            min: 0
+            max: 100
+            needle: true
+            severity:
+              green: 40
+              yellow: 20
+              red: 0
+
+      # ─── ENERGIE FLOW ─────────────────────────────────────────────
+      - type: energy-distribution
+        title: Energie Fluss
+
+      # ─── LIVE WERTE ───────────────────────────────────────────────
+      - type: entities
+        title: Live Energiewerte
+        icon: mdi:flash
+        entities:
+          - entity: sensor.smart_meter_netzbezug
+            name: Netzbezug
+            icon: mdi:transmission-tower-import
+          - entity: sensor.smart_meter_netzeinspeisung
+            name: Netzeinspeisung
+            icon: mdi:transmission-tower-export
+          - entity: sensor.solarbank_3_e2700_pro_solarleistung
+            name: Solarleistung
+            icon: mdi:solar-power
+          - entity: sensor.system_balkonkraft_stesch_sb_einspeiseleistung
+            name: Einspeiseleistung
+            icon: mdi:home-export-outline
+          - entity: sensor.system_balkonkraft_stesch_hausbedarf
+            name: Hausbedarf
+            icon: mdi:home-lightning-bolt
+          - entity: sensor.solarbank_3_e2700_pro_ladestand
+            name: Akku Ladestand
+            icon: mdi:battery-charging
+          - entity: sensor.solarbank_3_e2700_pro_akkuenergie
+            name: Akku Energie
+            icon: mdi:battery-high
+
+      # ─── STATISTIKEN ──────────────────────────────────────────────
+      - type: entities
+        title: Gesamtstatistiken
+        icon: mdi:chart-bar
+        entities:
+          - entity: sensor.system_balkonkraft_stesch_ertrag_gesamt
+            name: Gesamtertrag Solar
+            icon: mdi:solar-panel
+          - entity: sensor.system_balkonkraft_stesch_kostenersparnis
+            name: Kostenersparnis
+            icon: mdi:currency-eur
+          - entity: sensor.system_balkonkraft_stesch_co2_einsparung
+            name: CO₂ Einsparung
+            icon: mdi:leaf
+          - entity: sensor.system_balkonkraft_stesch_ai_profit
+            name: KI Profit
+            icon: mdi:robot
+
+      # ─── LEISTUNGSVERLAUF (24h) ───────────────────────────────────
+      - type: history-graph
+        title: Leistungsverlauf heute
+        hours_to_show: 24
+        refresh_interval: 60
+        entities:
+          - entity: sensor.smart_meter_netzbezug
+            name: Netzbezug
+          - entity: sensor.solarbank_3_e2700_pro_solarleistung
+            name: Solar
+          - entity: sensor.system_balkonkraft_stesch_hausbedarf
+            name: Hausbedarf
+
+      # ─── STATISTIK GRAPH 7 TAGE ──────────────────────────────────
+      - type: statistics-graph
+        title: Energie diese Woche
+        period: day
+        days_to_show: 7
+        chart_type: bar
+        entities:
+          - entity: sensor.smart_meter_netzbezug
+            name: Netzbezug
+          - entity: sensor.solarbank_3_e2700_pro_solarleistung
+            name: Solar
+
+      # ─── SOLARBANK DETAILS ────────────────────────────────────────
+      - type: glance
+        title: Solarbank Details
+        entities:
+          - entity: sensor.solarbank_3_e2700_pro_solar_pv1
+            name: PV1
+          - entity: sensor.solarbank_3_e2700_pro_solar_pv2
+            name: PV2
+          - entity: sensor.solarbank_3_e2700_pro_solar_pv3
+            name: PV3
+          - entity: sensor.solarbank_3_e2700_pro_solar_pv4
+            name: PV4
+          - entity: sensor.solarbank_3_e2700_pro_temperatur
+            name: Temp
+          - entity: sensor.solarbank_3_e2700_pro_betriebszustand
+            name: Status
