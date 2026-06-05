@@ -1,0 +1,711 @@
+# ═══════════════════════════════════════════════════════════════════
+#  ⚡ STESCH ENERGIE-DASHBOARD – Lovelace YAML
+#  Erstellt: 2026-06-05
+# ───────────────────────────────────────────────────────────────────
+#  BENÖTIGTE HACS-KARTEN (einmalig installieren):
+#  • mushroom-cards        → github.com/piitaya/lovelace-mushroom
+#  • apexcharts-card       → github.com/RomRider/apexcharts-card
+#  • power-flow-card-plus  → github.com/flixlix/power-flow-card-plus
+#  • mini-graph-card       → github.com/kalkih/mini-graph-card
+#  • stack-in-card         → github.com/custom-cards/stack-in-card
+#
+#  HINWEIS: Entity-IDs ggf. anpassen – einfach in HA unter
+#  Einstellungen → Geräte & Dienste → Entitäten die echte ID ablesen
+# ═══════════════════════════════════════════════════════════════════
+
+title: ⚡ Energie-Dashboard
+views:
+  - title: Energie
+    path: energie
+    icon: mdi:lightning-bolt-circle
+    subview: false
+    badges: []
+    cards:
+
+      # ┌─────────────────────────────────────────────────────────┐
+      # │  SEKTION 1 · LIVE STATUS CHIPS (Schnellübersicht)       │
+      # └─────────────────────────────────────────────────────────┘
+      - type: custom:mushroom-chips-card
+        alignment: center
+        chips:
+          - type: template
+            icon: mdi:solar-power-variant
+            content: >
+              {{ states('sensor.solarbank_3_e2700_pro_solarleistung') | int }} W
+            icon_color: amber
+            tap_action:
+              action: navigate
+              navigation_path: "#solar"
+          - type: template
+            icon: mdi:transmission-tower-import
+            content: >
+              {{ states('sensor.smart_meter_netzbezug') | int }} W
+            icon_color: >
+              {% if states('sensor.smart_meter_netzbezug') | int > 0 %}
+                red
+              {% else %}
+                green
+              {% endif %}
+          - type: template
+            icon: mdi:home-lightning-bolt
+            content: >
+              {{ states('sensor.system_balkonkraft_stesch_hausbedarf') | int }} W
+            icon_color: blue
+          - type: template
+            icon: >
+              {% set soc = states('sensor.solarbank_3_e2700_pro_ladestand') | int %}
+              {% if soc > 80 %}mdi:battery-high
+              {% elif soc > 50 %}mdi:battery-medium
+              {% elif soc > 20 %}mdi:battery-low
+              {% else %}mdi:battery-alert{% endif %}
+            content: >
+              {{ states('sensor.solarbank_3_e2700_pro_ladestand') | int }}%
+            icon_color: >
+              {% set soc = states('sensor.solarbank_3_e2700_pro_ladestand') | int %}
+              {% if soc > 70 %}green
+              {% elif soc > 30 %}orange
+              {% else %}red{% endif %}
+          - type: template
+            icon: mdi:leaf
+            content: >
+              {{ states('sensor.system_balkonkraft_stesch_co2_einsparung') | float | round(1) }} kg
+            icon_color: teal
+
+      # ┌─────────────────────────────────────────────────────────┐
+      # │  SEKTION 2 · LIVE KENNZAHLEN (4 Kacheln)                │
+      # └─────────────────────────────────────────────────────────┘
+      - type: horizontal-stack
+        cards:
+          - type: custom:mushroom-template-card
+            primary: >
+              {{ states('sensor.solarbank_3_e2700_pro_solarleistung') | int }} W
+            secondary: Solarleistung
+            icon: mdi:solar-power-variant
+            icon_color: amber
+            entity: sensor.solarbank_3_e2700_pro_solarleistung
+            tap_action:
+              action: more-info
+            layout: vertical
+            fill_container: true
+
+          - type: custom:mushroom-template-card
+            primary: >
+              {{ states('sensor.smart_meter_netzbezug') | int }} W
+            secondary: >
+              {% if states('sensor.smart_meter_netzeinspeisung') | int > 0 %}
+                ↑ {{ states('sensor.smart_meter_netzeinspeisung') | int }} W eingespeist
+              {% else %}
+                Netzbezug
+              {% endif %}
+            icon: mdi:transmission-tower
+            icon_color: >
+              {% if states('sensor.smart_meter_netzbezug') | int > 0 %}red
+              {% else %}green{% endif %}
+            entity: sensor.smart_meter_netzbezug
+            tap_action:
+              action: more-info
+            layout: vertical
+            fill_container: true
+
+          - type: custom:mushroom-template-card
+            primary: >
+              {{ states('sensor.system_balkonkraft_stesch_hausbedarf') | int }} W
+            secondary: Hausbedarf
+            icon: mdi:home-lightning-bolt
+            icon_color: indigo
+            entity: sensor.system_balkonkraft_stesch_hausbedarf
+            tap_action:
+              action: more-info
+            layout: vertical
+            fill_container: true
+
+          - type: custom:mushroom-template-card
+            primary: >
+              {{ states('sensor.solarbank_3_e2700_pro_ladestand') | int }}%
+            secondary: >
+              {{ states('sensor.solarbank_3_e2700_pro_akkuenergie') | int }} Wh
+            icon: >
+              {% set soc = states('sensor.solarbank_3_e2700_pro_ladestand') | int %}
+              {% if soc > 80 %}mdi:battery-charging-high
+              {% elif soc > 50 %}mdi:battery-charging-medium
+              {% elif soc > 20 %}mdi:battery-charging-low
+              {% else %}mdi:battery-alert{% endif %}
+            icon_color: >
+              {% set soc = states('sensor.solarbank_3_e2700_pro_ladestand') | int %}
+              {% if soc > 70 %}green
+              {% elif soc > 30 %}orange
+              {% else %}red{% endif %}
+            entity: sensor.solarbank_3_e2700_pro_ladestand
+            tap_action:
+              action: more-info
+            layout: vertical
+            fill_container: true
+
+      # ┌─────────────────────────────────────────────────────────┐
+      # │  SEKTION 3 · ENERGIEFLUSS (Power Flow Card Plus)        │
+      # └─────────────────────────────────────────────────────────┘
+      - type: custom:power-flow-card-plus
+        title: ⚡ Energiefluss – Live
+        entities:
+          grid:
+            entity: sensor.smart_meter_netzbezug
+            name: Stromnetz
+            secondary_info:
+              entity: sensor.smart_meter_netzeinspeisung
+              template: "Einspeisung: {0} W"
+            color:
+              consumption: "#E74C3C"
+              production: "#2ECC71"
+          solar:
+            entity: sensor.solarbank_3_e2700_pro_solarleistung
+            name: Solar PV
+            color: "#FFB700"
+            display_zero_state: true
+            secondary_info:
+              entity: sensor.solarbank_3_e2700_pro_betriebszustand
+          battery:
+            entity: sensor.solarbank_3_e2700_pro_batterie_ausgang
+            state_of_charge: sensor.solarbank_3_e2700_pro_ladestand
+            name: Akku
+            color:
+              charging: "#3498DB"
+              discharging: "#E67E22"
+          home:
+            entity: sensor.system_balkonkraft_stesch_hausbedarf
+            name: Haus
+            color: "#9B59B6"
+        watt_threshold: 1000
+        clickable_entities: true
+        display_zero_lines: true
+        use_new_flow_rate_model: true
+        min_flow_rate: 0.3
+        max_flow_rate: 2.5
+
+      # ┌─────────────────────────────────────────────────────────┐
+      # │  SEKTION 4 · SOLAR TAGESVERLAUF (ApexCharts)            │
+      # └─────────────────────────────────────────────────────────┘
+      - type: custom:apexcharts-card
+        header:
+          show: true
+          title: ☀️ Solarleistung – Heutiger Tagesverlauf
+          show_states: true
+          colorize_states: true
+        graph_span: 24h
+        span:
+          start: day
+        all_series_config:
+          stroke_width: 2
+          fill_raw: "0"
+        series:
+          - entity: sensor.solarbank_3_e2700_pro_solarleistung
+            name: ☀ Gesamt
+            color: "#FFB700"
+            type: area
+            opacity: 0.25
+            stroke_width: 3
+          - entity: sensor.solarbank_3_e2700_pro_solar_pv1
+            name: PV1
+            color: "#FF6B35"
+            type: line
+          - entity: sensor.solarbank_3_e2700_pro_solar_pv2
+            name: PV2
+            color: "#F7931E"
+            type: line
+          - entity: sensor.solarbank_3_e2700_pro_solar_pv3
+            name: PV3
+            color: "#FFD700"
+            type: line
+          - entity: sensor.solarbank_3_e2700_pro_solar_pv4
+            name: PV4
+            color: "#FFF44F"
+            type: line
+        yaxis:
+          - min: 0
+            decimals: 0
+            apex_config:
+              title:
+                text: Watt (W)
+        apex_config:
+          chart:
+            background: transparent
+          theme:
+            mode: dark
+          tooltip:
+            shared: true
+
+      # ┌─────────────────────────────────────────────────────────┐
+      # │  SEKTION 5 · PV PANELS + AKKUSTATUS (2 Spalten)         │
+      # └─────────────────────────────────────────────────────────┘
+      - type: horizontal-stack
+        cards:
+
+          # PV Panel Aufteilung
+          - type: custom:apexcharts-card
+            header:
+              show: true
+              title: 🔆 PV Panels
+            chart_type: radialBar
+            series:
+              - entity: sensor.solarbank_3_e2700_pro_solar_pv1
+                name: PV 1
+                color: "#FF6B35"
+                max: 700
+              - entity: sensor.solarbank_3_e2700_pro_solar_pv2
+                name: PV 2
+                color: "#F7931E"
+                max: 700
+              - entity: sensor.solarbank_3_e2700_pro_solar_pv3
+                name: PV 3
+                color: "#FFD700"
+                max: 700
+              - entity: sensor.solarbank_3_e2700_pro_solar_pv4
+                name: PV 4
+                color: "#FFF44F"
+                max: 700
+            apex_config:
+              plotOptions:
+                radialBar:
+                  hollow:
+                    size: "35%"
+                  track:
+                    background: "#333"
+                  dataLabels:
+                    total:
+                      show: true
+                      label: Watt
+                      formatter: "function(w) { return w.globals.seriesTotals.reduce((a,b)=>a+b,0).toFixed(0)+' W' }"
+              legend:
+                show: true
+                position: bottom
+              chart:
+                background: transparent
+              theme:
+                mode: dark
+
+          # Akku Status
+          - type: custom:stack-in-card
+            mode: vertical
+            cards:
+              - type: gauge
+                entity: sensor.solarbank_3_e2700_pro_ladestand
+                name: 🔋 Akku Ladestand
+                needle: true
+                severity:
+                  red: 0
+                  yellow: 20
+                  green: 50
+                min: 0
+                max: 100
+              - type: horizontal-stack
+                cards:
+                  - type: custom:mushroom-template-card
+                    primary: >
+                      {{ states('sensor.solarbank_3_e2700_pro_akkuenergie') | int }} Wh
+                    secondary: Gespeichert
+                    icon: mdi:battery-charging
+                    icon_color: blue
+                    entity: sensor.solarbank_3_e2700_pro_akkuenergie
+                    layout: vertical
+                    fill_container: true
+                  - type: custom:mushroom-template-card
+                    primary: >
+                      {{ states('sensor.solarbank_3_e2700_pro_temperatur') }}°C
+                    secondary: Temperatur
+                    icon: mdi:thermometer
+                    icon_color: >
+                      {% if states('sensor.solarbank_3_e2700_pro_temperatur') | int > 35 %}
+                        red
+                      {% elif states('sensor.solarbank_3_e2700_pro_temperatur') | int > 25 %}
+                        orange
+                      {% else %}
+                        blue
+                      {% endif %}
+                    entity: sensor.solarbank_3_e2700_pro_temperatur
+                    layout: vertical
+                    fill_container: true
+              - type: custom:mushroom-template-card
+                primary: >
+                  {{ states('sensor.solarbank_3_e2700_pro_betriebszustand') | upper }}
+                secondary: Betriebszustand
+                icon: mdi:cog-sync
+                icon_color: teal
+                entity: sensor.solarbank_3_e2700_pro_betriebszustand
+
+      # ┌─────────────────────────────────────────────────────────┐
+      # │  SEKTION 6 · AKKU TAGESVERLAUF (ApexCharts)             │
+      # └─────────────────────────────────────────────────────────┘
+      - type: custom:apexcharts-card
+        header:
+          show: true
+          title: 🔋 Akku – Ladestand & Leistungsfluss heute
+          show_states: true
+          colorize_states: true
+        graph_span: 24h
+        span:
+          start: day
+        series:
+          - entity: sensor.solarbank_3_e2700_pro_ladestand
+            name: Ladestand %
+            color: "#3498DB"
+            type: area
+            fill_raw: "0"
+            opacity: 0.2
+            stroke_width: 3
+            yaxis_id: percent
+          - entity: sensor.solarbank_3_e2700_pro_batterie_ausgang
+            name: Akku Ausgang
+            color: "#E74C3C"
+            type: line
+            stroke_width: 2
+            yaxis_id: watt
+          - entity: sensor.solarbank_3_e2700_pro_netzaufladung
+            name: Netzaufladung
+            color: "#9B59B6"
+            type: line
+            stroke_width: 2
+            yaxis_id: watt
+          - entity: sensor.solarbank_3_e2700_pro_ac_hausabgabe
+            name: Hausabgabe
+            color: "#2ECC71"
+            type: line
+            stroke_width: 2
+            yaxis_id: watt
+        yaxis:
+          - id: percent
+            min: 0
+            max: 100
+            decimals: 0
+            apex_config:
+              title:
+                text: "Ladestand (%)"
+          - id: watt
+            opposite: true
+            min: 0
+            decimals: 0
+            apex_config:
+              title:
+                text: "Leistung (W)"
+        apex_config:
+          chart:
+            background: transparent
+          theme:
+            mode: dark
+
+      # ┌─────────────────────────────────────────────────────────┐
+      # │  SEKTION 7 · NETZ BEZUG / EINSPEISUNG                   │
+      # └─────────────────────────────────────────────────────────┘
+      - type: custom:apexcharts-card
+        header:
+          show: true
+          title: 🔌 Stromnetz – Bezug & Einspeisung heute
+          show_states: true
+          colorize_states: true
+        graph_span: 24h
+        span:
+          start: day
+        series:
+          - entity: sensor.smart_meter_netzbezug
+            name: Netzbezug
+            color: "#E74C3C"
+            type: area
+            fill_raw: "0"
+            stroke_width: 2
+            opacity: 0.3
+          - entity: sensor.smart_meter_netzeinspeisung
+            name: Netzeinspeisung
+            color: "#2ECC71"
+            type: area
+            fill_raw: "0"
+            stroke_width: 2
+            opacity: 0.3
+          - entity: sensor.system_balkonkraft_stesch_hausbedarf
+            name: Hausbedarf
+            color: "#9B59B6"
+            type: line
+            stroke_width: 2
+        yaxis:
+          - min: 0
+            decimals: 0
+            apex_config:
+              title:
+                text: Watt (W)
+        apex_config:
+          chart:
+            background: transparent
+          theme:
+            mode: dark
+          tooltip:
+            shared: true
+
+      # ┌─────────────────────────────────────────────────────────┐
+      # │  SEKTION 8 · WIRTSCHAFTLICHKEIT (4 Kacheln)             │
+      # └─────────────────────────────────────────────────────────┘
+      - type: custom:stack-in-card
+        mode: vertical
+        cards:
+          - type: markdown
+            content: >
+              ## 💰 Wirtschaftlichkeit & Umwelt
+          - type: horizontal-stack
+            cards:
+              - type: custom:mushroom-template-card
+                primary: >
+                  {{ states('sensor.system_balkonkraft_stesch_ertrag_gesamt') | float | round(1) }} kWh
+                secondary: Ertrag gesamt
+                icon: mdi:lightning-bolt-circle
+                icon_color: amber
+                entity: sensor.system_balkonkraft_stesch_ertrag_gesamt
+                layout: vertical
+                fill_container: true
+                tap_action:
+                  action: more-info
+
+              - type: custom:mushroom-template-card
+                primary: >
+                  {{ states('sensor.system_balkonkraft_stesch_kostenersparnis') | float | round(2) }} €
+                secondary: Kostenersparnis
+                icon: mdi:piggy-bank-outline
+                icon_color: green
+                entity: sensor.system_balkonkraft_stesch_kostenersparnis
+                layout: vertical
+                fill_container: true
+                tap_action:
+                  action: more-info
+
+              - type: custom:mushroom-template-card
+                primary: >
+                  {{ states('sensor.system_balkonkraft_stesch_ai_profit') | float | round(2) }} €
+                secondary: AI Profit
+                icon: mdi:robot-excited
+                icon_color: purple
+                entity: sensor.system_balkonkraft_stesch_ai_profit
+                layout: vertical
+                fill_container: true
+                tap_action:
+                  action: more-info
+
+              - type: custom:mushroom-template-card
+                primary: >
+                  {{ states('sensor.system_balkonkraft_stesch_co2_einsparung') | float | round(1) }} kg
+                secondary: CO₂ gespart
+                icon: mdi:molecule-co2
+                icon_color: teal
+                entity: sensor.system_balkonkraft_stesch_co2_einsparung
+                layout: vertical
+                fill_container: true
+                tap_action:
+                  action: more-info
+
+      # ┌─────────────────────────────────────────────────────────┐
+      # │  SEKTION 9 · MINI-SPARK-GRAPHS (7-Tage-Übersicht)       │
+      # └─────────────────────────────────────────────────────────┘
+      - type: horizontal-stack
+        cards:
+          - type: custom:mini-graph-card
+            entities:
+              - entity: sensor.solarbank_3_e2700_pro_solarleistung
+                name: Solar
+                color: "#FFB700"
+            name: ☀️ Solar 7 Tage
+            hours_to_show: 168
+            points_per_hour: 1
+            line_width: 2
+            color: "#FFB700"
+            fill: true
+            show:
+              icon: true
+              state: true
+              legend: false
+              fill: fade
+
+          - type: custom:mini-graph-card
+            entities:
+              - entity: sensor.smart_meter_netzbezug
+                name: Netzbezug
+                color: "#E74C3C"
+            name: 🔌 Netz 7 Tage
+            hours_to_show: 168
+            points_per_hour: 1
+            line_width: 2
+            color: "#E74C3C"
+            fill: true
+            show:
+              icon: true
+              state: true
+              legend: false
+              fill: fade
+
+          - type: custom:mini-graph-card
+            entities:
+              - entity: sensor.solarbank_3_e2700_pro_ladestand
+                name: Akku
+                color: "#3498DB"
+            name: 🔋 Akku 7 Tage
+            hours_to_show: 168
+            points_per_hour: 1
+            line_width: 2
+            color: "#3498DB"
+            fill: true
+            show:
+              icon: true
+              state: true
+              legend: false
+              fill: fade
+
+      # ┌─────────────────────────────────────────────────────────┐
+      # │  SEKTION 10 · HAUSGERÄTE (Waschmaschine + Spülmaschine) │
+      # └─────────────────────────────────────────────────────────┘
+      - type: horizontal-stack
+        cards:
+
+          # Waschmaschine
+          - type: custom:stack-in-card
+            mode: vertical
+            cards:
+              - type: markdown
+                content: >
+                  ### 🫧 Waschmaschine
+              - type: custom:mushroom-template-card
+                primary: >
+                  {% if is_state('binary_sensor.waschmaschine', 'on') %}
+                    Läuft
+                  {% elif is_state('binary_sensor.waschmaschine', 'off') %}
+                    Bereit
+                  {% else %}
+                    Nicht verfügbar
+                  {% endif %}
+                secondary: >
+                  {% if states('sensor.waschmaschine_fortschritt') != 'unavailable' %}
+                    Fortschritt: {{ states('sensor.waschmaschine_fortschritt') }}%
+                  {% else %}
+                    –
+                  {% endif %}
+                icon: mdi:washing-machine
+                icon_color: >
+                  {% if is_state('binary_sensor.waschmaschine', 'on') %}blue
+                  {% else %}grey{% endif %}
+                entity: binary_sensor.waschmaschine
+              - type: entities
+                show_header_toggle: false
+                entities:
+                  - entity: sensor.waschmaschine_leistung
+                    name: Leistung
+                    icon: mdi:lightning-bolt
+                  - entity: sensor.waschmaschine_restdauer
+                    name: Restdauer
+                    icon: mdi:timer-outline
+                  - entity: sensor.waschmaschine_status
+                    name: Status
+                    icon: mdi:information-outline
+                  - entity: switch.shellyplugn
+                    name: Steckdose
+                    icon: mdi:power-socket-eu
+
+          # Spülmaschine
+          - type: custom:stack-in-card
+            mode: vertical
+            cards:
+              - type: markdown
+                content: >
+                  ### 🍽️ Spülmaschine
+              - type: custom:mushroom-template-card
+                primary: >
+                  {% if is_state('binary_sensor.spuelmaschine_laeuft', 'on') %}
+                    Läuft
+                  {% elif is_state('binary_sensor.spuelmaschine_laeuft', 'off') %}
+                    Bereit
+                  {% else %}
+                    Nicht verfügbar
+                  {% endif %}
+                secondary: >
+                  {% if states('sensor.spuelmaschine_fortschritt') != 'unavailable' %}
+                    Fortschritt: {{ states('sensor.spuelmaschine_fortschritt') }}%
+                  {% else %}
+                    –
+                  {% endif %}
+                icon: mdi:dishwasher
+                icon_color: >
+                  {% if is_state('binary_sensor.spuelmaschine_laeuft', 'on') %}cyan
+                  {% else %}grey{% endif %}
+                entity: binary_sensor.spuelmaschine_laeuft
+              - type: entities
+                show_header_toggle: false
+                entities:
+                  - entity: sensor.spuelmaschine_leistung
+                    name: Leistung
+                    icon: mdi:lightning-bolt
+                  - entity: sensor.spuelmaschine_restdauer
+                    name: Restdauer
+                    icon: mdi:timer-outline
+                  - entity: sensor.spuelmaschine_status
+                    name: Status
+                    icon: mdi:information-outline
+
+      # ┌─────────────────────────────────────────────────────────┐
+      # │  SEKTION 11 · SOLARBANK STEUERUNG                       │
+      # └─────────────────────────────────────────────────────────┘
+      - type: entities
+        title: ⚙️ Solarbank Steuerung
+        icon: mdi:solar-panel-large
+        show_header_toggle: false
+        entities:
+          - entity: select.solarbank_3_e2700_pro_benutzermodus
+            name: Benutzermodus
+            icon: mdi:tune
+          - entity: select.solarbank_3_e2700_pro_ladestandreserve
+            name: Ladestandreserve
+            icon: mdi:battery-lock
+          - entity: number.solarbank_3_e2700_pro_akku_kapazitat
+            name: Akku Kapazität
+            icon: mdi:battery-heart
+          - entity: switch.solarbank_3_e2700_pro_erlaube_netzeinspeisung
+            name: Netzeinspeisung erlauben
+            icon: mdi:transmission-tower-export
+          - entity: switch.solarbank_3_e2700_pro_notladeoption
+            name: Notladeoption
+            icon: mdi:battery-charging-wireless-alert
+          - entity: switch.solarbank_3_e2700_pro_auto_upgrade
+            name: Auto-Upgrade
+            icon: mdi:update
+          - type: divider
+          - type: button
+            name: Solarbank Details aktualisieren
+            icon: mdi:refresh
+            tap_action:
+              action: call-service
+              service: button.press
+              target:
+                entity_id: button.solarbank_3_e2700_pro_details_aktualisieren
+
+      # ┌─────────────────────────────────────────────────────────┐
+      # │  SEKTION 12 · SMART METER DETAILS                       │
+      # └─────────────────────────────────────────────────────────┘
+      - type: entities
+        title: 📡 Smart Meter
+        icon: mdi:meter-electric
+        show_header_toggle: false
+        entities:
+          - entity: sensor.smart_meter_netzbezug
+            name: Netzbezug
+            icon: mdi:transmission-tower-import
+          - entity: sensor.smart_meter_netzeinspeisung
+            name: Netzeinspeisung
+            icon: mdi:transmission-tower-export
+          - entity: sensor.smart_meter_netz_status
+            name: Netz Status
+            icon: mdi:check-network
+          - entity: sensor.smart_meter_cloud_zustand
+            name: Cloud Verbindung
+            icon: mdi:cloud-check-outline
+          - entity: sensor.smart_meter_firmware
+            name: Firmware Version
+            icon: mdi:chip
+          - type: divider
+          - type: button
+            name: Smart Meter aktualisieren
+            icon: mdi:refresh
+            tap_action:
+              action: call-service
+              service: button.press
+              target:
+                entity_id: button.smart_meter_details_aktualisieren
