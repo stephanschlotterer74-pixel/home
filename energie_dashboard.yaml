@@ -719,7 +719,633 @@ views:
               formatter: "function(val) { var d = new Date(val); return d.toLocaleDateString('de-DE',{weekday:'short',day:'2-digit',month:'2-digit'}); }"
 
       # ┌─────────────────────────────────────────────────────────┐
-      # │  SEKTION 16 · SOLARBANK STEUERUNG                       │
+      # │  SEKTION 16 · TAGES-HÖCHSTWERT SOLAR – GROSS            │
+      # └─────────────────────────────────────────────────────────┘
+      - type: custom:stack-in-card
+        mode: vertical
+        cards:
+          - type: markdown
+            content: >
+              ## ⚡ Anker Solix Pro 3 – Heutige Spitzenwerte
+          - type: horizontal-stack
+            cards:
+              # Solar Gesamt Tagesmax
+              - type: custom:apexcharts-card
+                header:
+                  show: true
+                  title: ☀️ Solar Gesamt
+                  show_states: true
+                  colorize_states: true
+                graph_span: today
+                span:
+                  start: day
+                series:
+                  - entity: sensor.solarbank_3_e2700_pro_solarleistung
+                    name: Peak heute
+                    color: "#FFB700"
+                    type: area
+                    stroke_width: 3
+                    opacity: 0.25
+                    fill_raw: "0"
+                    show:
+                      in_header: true
+                      header_color_threshold:
+                        - value: 0
+                          color: "#FFB700"
+                apex_config:
+                  chart:
+                    background: "transparent"
+                    height: 180
+                  theme:
+                    mode: dark
+                  annotations:
+                    yaxis:
+                      - y: 200
+                        borderColor: "#FFB700"
+                        borderWidth: 2
+                        strokeDashArray: 4
+                        label:
+                          text: "Vorgabe"
+                          style:
+                            color: "#FFB700"
+                            background: "transparent"
+                  dataLabels:
+                    enabled: false
+                  yaxis:
+                    min: 0
+                    labels:
+                      style:
+                        fontSize: "11px"
+                  xaxis:
+                    labels:
+                      format: "HH:mm"
+
+              # PV1 Tagesmax
+              - type: custom:apexcharts-card
+                header:
+                  show: true
+                  title: 🔆 PV1
+                  show_states: true
+                  colorize_states: true
+                graph_span: today
+                span:
+                  start: day
+                series:
+                  - entity: sensor.solarbank_3_e2700_pro_solar_pv1
+                    name: PV1 Peak
+                    color: "#FF6B35"
+                    type: area
+                    stroke_width: 2
+                    opacity: 0.3
+                    fill_raw: "0"
+                apex_config:
+                  chart:
+                    background: "transparent"
+                    height: 180
+                  theme:
+                    mode: dark
+                  yaxis:
+                    min: 0
+                  xaxis:
+                    labels:
+                      format: "HH:mm"
+
+              # PV2 Tagesmax
+              - type: custom:apexcharts-card
+                header:
+                  show: true
+                  title: 🔆 PV2
+                  show_states: true
+                  colorize_states: true
+                graph_span: today
+                span:
+                  start: day
+                series:
+                  - entity: sensor.solarbank_3_e2700_pro_solar_pv2
+                    name: PV2 Peak
+                    color: "#2ECC71"
+                    type: area
+                    stroke_width: 2
+                    opacity: 0.3
+                    fill_raw: "0"
+                apex_config:
+                  chart:
+                    background: "transparent"
+                    height: 180
+                  theme:
+                    mode: dark
+                  yaxis:
+                    min: 0
+                  xaxis:
+                    labels:
+                      format: "HH:mm"
+
+          - type: horizontal-stack
+            cards:
+              # PV3 Tagesmax
+              - type: custom:apexcharts-card
+                header:
+                  show: true
+                  title: 🔆 PV3
+                  show_states: true
+                  colorize_states: true
+                graph_span: today
+                span:
+                  start: day
+                series:
+                  - entity: sensor.solarbank_3_e2700_pro_solar_pv3
+                    name: PV3 Peak
+                    color: "#3498DB"
+                    type: area
+                    stroke_width: 2
+                    opacity: 0.3
+                    fill_raw: "0"
+                apex_config:
+                  chart:
+                    background: "transparent"
+                    height: 180
+                  theme:
+                    mode: dark
+                  yaxis:
+                    min: 0
+                  xaxis:
+                    labels:
+                      format: "HH:mm"
+
+              # PV4 Tagesmax
+              - type: custom:apexcharts-card
+                header:
+                  show: true
+                  title: 🔆 PV4
+                  show_states: true
+                  colorize_states: true
+                graph_span: today
+                span:
+                  start: day
+                series:
+                  - entity: sensor.solarbank_3_e2700_pro_solar_pv4
+                    name: PV4 Peak
+                    color: "#9B59B6"
+                    type: area
+                    stroke_width: 2
+                    opacity: 0.3
+                    fill_raw: "0"
+                apex_config:
+                  chart:
+                    background: "transparent"
+                    height: 180
+                  theme:
+                    mode: dark
+                  yaxis:
+                    min: 0
+                  xaxis:
+                    labels:
+                      format: "HH:mm"
+
+              # Ladestand heute
+              - type: custom:apexcharts-card
+                header:
+                  show: true
+                  title: 🔋 Akku heute
+                  show_states: true
+                  colorize_states: true
+                graph_span: today
+                span:
+                  start: day
+                series:
+                  - entity: sensor.solarbank_3_e2700_pro_ladestand
+                    name: Ladestand %
+                    color: "#3498DB"
+                    type: area
+                    stroke_width: 2
+                    opacity: 0.3
+                    fill_raw: "0"
+                apex_config:
+                  chart:
+                    background: "transparent"
+                    height: 180
+                  theme:
+                    mode: dark
+                  yaxis:
+                    min: 0
+                    max: 100
+                  xaxis:
+                    labels:
+                      format: "HH:mm"
+
+      # ┌─────────────────────────────────────────────────────────┐
+      # │  SEKTION 17 · TAGES & WOCHEN MAXIMA – 4 GROSSE KACHELN  │
+      # └─────────────────────────────────────────────────────────┘
+      - type: custom:stack-in-card
+        mode: vertical
+        cards:
+          - type: markdown
+            content: "## 🏅 Tages- & Wochen-Maximalwerte"
+          - type: horizontal-stack
+            cards:
+              - type: custom:apexcharts-card
+                header:
+                  show: true
+                  title: ☀️ Solar Max – Heute
+                  show_states: true
+                  colorize_states: true
+                graph_span: today
+                span:
+                  start: day
+                all_series_config:
+                  group_by:
+                    func: max
+                    duration: 1h
+                series:
+                  - entity: sensor.solarbank_3_e2700_pro_solarleistung
+                    name: Max heute
+                    color: "#FFB700"
+                    type: column
+                    stroke_width: 0
+                apex_config:
+                  chart:
+                    background: "transparent"
+                    height: 200
+                  theme:
+                    mode: dark
+                  plotOptions:
+                    bar:
+                      borderRadius: 4
+                      columnWidth: 80%
+                  dataLabels:
+                    enabled: false
+                  yaxis:
+                    min: 0
+                    title:
+                      text: W
+                  xaxis:
+                    labels:
+                      format: "HH:mm"
+                      rotate: -45
+
+              - type: custom:apexcharts-card
+                header:
+                  show: true
+                  title: 📅 Solar Max – Diese Woche
+                  show_states: true
+                  colorize_states: true
+                graph_span: 7d
+                span:
+                  end: now
+                all_series_config:
+                  group_by:
+                    func: max
+                    duration: 1d
+                series:
+                  - entity: sensor.solarbank_3_e2700_pro_solarleistung
+                    name: Max je Tag
+                    color: "#F39C12"
+                    type: column
+                    stroke_width: 0
+                  - entity: sensor.solarbank_3_e2700_pro_solar_pv1
+                    name: PV1
+                    color: "#FF6B35"
+                    type: column
+                  - entity: sensor.solarbank_3_e2700_pro_solar_pv2
+                    name: PV2
+                    color: "#2ECC71"
+                    type: column
+                  - entity: sensor.solarbank_3_e2700_pro_solar_pv3
+                    name: PV3
+                    color: "#3498DB"
+                    type: column
+                  - entity: sensor.solarbank_3_e2700_pro_solar_pv4
+                    name: PV4
+                    color: "#9B59B6"
+                    type: column
+                apex_config:
+                  chart:
+                    background: "transparent"
+                    height: 200
+                  theme:
+                    mode: dark
+                  plotOptions:
+                    bar:
+                      borderRadius: 4
+                      columnWidth: 65%
+                  dataLabels:
+                    enabled: false
+                  yaxis:
+                    min: 0
+                    title:
+                      text: Max W
+                  xaxis:
+                    labels:
+                      formatter: "function(val) { var d=new Date(val); return d.toLocaleDateString('de-DE',{weekday:'short',day:'2-digit'}); }"
+
+      # ┌─────────────────────────────────────────────────────────┐
+      # │  SEKTION 18 · 🏆 PV ANKER SOLIX PRO 3 – HIGHSCORE LISTE │
+      # │  Tageserzeugung täglich aktualisiert (90 Tage)           │
+      # └─────────────────────────────────────────────────────────┘
+      - type: custom:stack-in-card
+        mode: vertical
+        cards:
+          - type: markdown
+            content: >
+              ## 🏆 Anker Solix Pro 3 – PV Highscore
+              **Tägliche Spitzenleistung** der letzten 90 Tage · automatisch aktualisiert
+          - type: custom:apexcharts-card
+            header:
+              show: true
+              title: 🥇 Spitzenleistung je Tag – 90 Tage Verlauf
+              show_states: true
+              colorize_states: true
+            graph_span: 90d
+            span:
+              end: now
+            all_series_config:
+              group_by:
+                func: max
+                duration: 1d
+              stroke_width: 0
+            series:
+              - entity: sensor.solarbank_3_e2700_pro_solarleistung
+                name: Solar Gesamt Peak
+                color: "#FFB700"
+                type: column
+              - entity: sensor.solarbank_3_e2700_pro_solar_pv4
+                name: PV4 Peak
+                color: "#9B59B6"
+                type: column
+              - entity: sensor.solarbank_3_e2700_pro_solar_pv2
+                name: PV2 Peak
+                color: "#2ECC71"
+                type: column
+              - entity: sensor.solarbank_3_e2700_pro_solar_pv1
+                name: PV1 Peak
+                color: "#FF6B35"
+                type: column
+              - entity: sensor.solarbank_3_e2700_pro_solar_pv3
+                name: PV3 Peak
+                color: "#3498DB"
+                type: column
+            apex_config:
+              chart:
+                background: "transparent"
+                height: 300
+              theme:
+                mode: dark
+              plotOptions:
+                bar:
+                  borderRadius: 2
+                  columnWidth: 90%
+              dataLabels:
+                enabled: false
+              tooltip:
+                x:
+                  formatter: "function(val) { var d=new Date(val); return d.toLocaleDateString('de-DE',{weekday:'long',day:'2-digit',month:'2-digit',year:'numeric'}); }"
+              yaxis:
+                min: 0
+                title:
+                  text: "Spitzenleistung (W)"
+              xaxis:
+                labels:
+                  formatter: "function(val) { var d=new Date(val); return d.toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit'}); }"
+                  rotate: -60
+                  style:
+                    fontSize: "10px"
+              annotations:
+                yaxis:
+                  - y: 200
+                    borderColor: "#FFB700"
+                    borderWidth: 2
+                    strokeDashArray: 6
+                    label:
+                      text: "Einspeisegrenze 200W"
+                      position: right
+                      style:
+                        color: "#FFB700"
+                        background: "transparent"
+                        fontSize: "11px"
+
+      # ┌─────────────────────────────────────────────────────────┐
+      # │  SEKTION 19 · WOCHEN RECORD KACHELN                      │
+      # └─────────────────────────────────────────────────────────┘
+      - type: horizontal-stack
+        cards:
+          # Wochenmax Solar
+          - type: custom:apexcharts-card
+            header:
+              show: true
+              title: 🌞 Wochenmax Solar (7T)
+            chart_type: radialBar
+            series:
+              - entity: sensor.solarbank_3_e2700_pro_solarleistung
+                name: Solar
+                color: "#FFB700"
+                max: 700
+                group_by:
+                  func: max
+                  duration: 7d
+            apex_config:
+              chart:
+                background: "transparent"
+                height: 200
+              theme:
+                mode: dark
+              plotOptions:
+                radialBar:
+                  hollow:
+                    size: "45%"
+                  dataLabels:
+                    name:
+                      show: true
+                    value:
+                      show: true
+                      formatter: "function(val) { return val + ' W' }"
+                      fontSize: "20px"
+                      color: "#FFB700"
+              legend:
+                show: false
+
+          # Wochenmax PV1
+          - type: custom:apexcharts-card
+            header:
+              show: true
+              title: 🔆 Wochenmax PV1
+            chart_type: radialBar
+            series:
+              - entity: sensor.solarbank_3_e2700_pro_solar_pv1
+                name: PV1
+                color: "#FF6B35"
+                max: 200
+                group_by:
+                  func: max
+                  duration: 7d
+            apex_config:
+              chart:
+                background: "transparent"
+                height: 200
+              theme:
+                mode: dark
+              plotOptions:
+                radialBar:
+                  hollow:
+                    size: "45%"
+                  dataLabels:
+                    value:
+                      show: true
+                      formatter: "function(val) { return val + ' W' }"
+                      fontSize: "18px"
+                      color: "#FF6B35"
+              legend:
+                show: false
+
+          # Wochenmax PV2
+          - type: custom:apexcharts-card
+            header:
+              show: true
+              title: 🔆 Wochenmax PV2
+            chart_type: radialBar
+            series:
+              - entity: sensor.solarbank_3_e2700_pro_solar_pv2
+                name: PV2
+                color: "#2ECC71"
+                max: 200
+                group_by:
+                  func: max
+                  duration: 7d
+            apex_config:
+              chart:
+                background: "transparent"
+                height: 200
+              theme:
+                mode: dark
+              plotOptions:
+                radialBar:
+                  hollow:
+                    size: "45%"
+                  dataLabels:
+                    value:
+                      show: true
+                      formatter: "function(val) { return val + ' W' }"
+                      fontSize: "18px"
+                      color: "#2ECC71"
+              legend:
+                show: false
+
+          # Wochenmax PV3
+          - type: custom:apexcharts-card
+            header:
+              show: true
+              title: 🔆 Wochenmax PV3
+            chart_type: radialBar
+            series:
+              - entity: sensor.solarbank_3_e2700_pro_solar_pv3
+                name: PV3
+                color: "#3498DB"
+                max: 200
+                group_by:
+                  func: max
+                  duration: 7d
+            apex_config:
+              chart:
+                background: "transparent"
+                height: 200
+              theme:
+                mode: dark
+              plotOptions:
+                radialBar:
+                  hollow:
+                    size: "45%"
+                  dataLabels:
+                    value:
+                      show: true
+                      formatter: "function(val) { return val + ' W' }"
+                      fontSize: "18px"
+                      color: "#3498DB"
+              legend:
+                show: false
+
+          # Wochenmax PV4
+          - type: custom:apexcharts-card
+            header:
+              show: true
+              title: 🔆 Wochenmax PV4
+            chart_type: radialBar
+            series:
+              - entity: sensor.solarbank_3_e2700_pro_solar_pv4
+                name: PV4
+                color: "#9B59B6"
+                max: 200
+                group_by:
+                  func: max
+                  duration: 7d
+            apex_config:
+              chart:
+                background: "transparent"
+                height: 200
+              theme:
+                mode: dark
+              plotOptions:
+                radialBar:
+                  hollow:
+                    size: "45%"
+                  dataLabels:
+                    value:
+                      show: true
+                      formatter: "function(val) { return val + ' W' }"
+                      fontSize: "18px"
+                      color: "#9B59B6"
+              legend:
+                show: false
+
+      # ┌─────────────────────────────────────────────────────────┐
+      # │  SEKTION 20 · HIGHSCORE 30 TAGE – STATISTIK BUILTIN     │
+      # └─────────────────────────────────────────────────────────┘
+      - type: statistics-graph
+        title: 📊 PV Tagesrekorde – 30 Tage Statistik (Max & Mittel)
+        entities:
+          - entity: sensor.solarbank_3_e2700_pro_solarleistung
+            name: ☀ Solar Gesamt
+          - entity: sensor.solarbank_3_e2700_pro_solar_pv1
+            name: PV1
+          - entity: sensor.solarbank_3_e2700_pro_solar_pv2
+            name: PV2
+          - entity: sensor.solarbank_3_e2700_pro_solar_pv3
+            name: PV3
+          - entity: sensor.solarbank_3_e2700_pro_solar_pv4
+            name: PV4
+        days_to_show: 30
+        period: day
+        stat_types:
+          - max
+          - mean
+        chart_type: bar
+
+      # ═══════════════════════════════════════════════════════════
+      # TÄGLICHER HIGHSCORE – AUTOMATION (in configuration.yaml)
+      # ═══════════════════════════════════════════════════════════
+      # Folgende Helfer in HA anlegen:
+      #   input_number.pv_tagesrekord_w     (0–2700, Einheit: W)
+      #   input_datetime.pv_rekord_datum    (Typ: date)
+      #   input_number.pv_tagesrekord_pv1   (0–700 W)
+      #   input_number.pv_tagesrekord_pv2   (0–700 W)
+      #   input_number.pv_tagesrekord_pv3   (0–700 W)
+      #   input_number.pv_tagesrekord_pv4   (0–700 W)
+      #
+      # Automation (in automations.yaml oder UI):
+      #   trigger:
+      #     - platform: time
+      #       at: "23:55:00"
+      #   action:
+      #     - service: input_number.set_value
+      #       target:
+      #         entity_id: input_number.pv_tagesrekord_w
+      #       data:
+      #         value: >
+      #           {% set heute = states('sensor.solarbank_3_e2700_pro_solarleistung') | float %}
+      #           {% set rekord = states('input_number.pv_tagesrekord_w') | float %}
+      #           {{ [heute, rekord] | max }}
+      # ═══════════════════════════════════════════════════════════
+
+      # ┌─────────────────────────────────────────────────────────┐
+      # │  SEKTION 21 · SOLARBANK STEUERUNG                       │
       # └─────────────────────────────────────────────────────────┘
       - type: entities
         title: ⚙️ Solarbank Steuerung
