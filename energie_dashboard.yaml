@@ -1,0 +1,54 @@
+# ═══════════════════════════════════════════════════════════════════
+#  ⚡ STESCH ENERGIE-DASHBOARD v2 – Lovelace YAML
+#  Erstellt: 2026-06-05 | Update: 2026-06-21
+# ───────────────────────────────────────────────────────────────────
+#  BENÖTIGTE HACS-KARTEN:
+#  • mushroom-cards        → github.com/piitaya/lovelace-mushroom
+#  • apexcharts-card       → github.com/RomRider/apexcharts-card
+#  • power-flow-card-plus  → github.com/flixlix/power-flow-card-plus
+#  • mini-graph-card       → github.com/kalkih/mini-graph-card
+#  • stack-in-card         → github.com/custom-cards/stack-in-card
+#  • bar-card              → github.com/custom-cards/bar-card
+#
+#  HINWEIS: Entity-IDs ggf. anpassen – in HA unter
+#  Einstellungen → Geräte & Dienste → Entitäten die echte ID ablesen
+# ═══════════════════════════════════════════════════════════════════
+
+title: ⚡ Energie-Dashboard
+views:
+  - title: Energie
+    path: energie
+    icon: mdi:lightning-bolt-circle
+    subview: false
+    badges: []
+    cards:
+
+      # ┌─────────────────────────────────────────────────────────┐
+      # │  SEKTION 1 · LIVE STATUS CHIPS                           │
+      # └─────────────────────────────────────────────────────────┘
+      - type: custom:mushroom-chips-card
+        alignment: center
+        chips:
+          - type: template
+            icon: mdi:solar-power-variant
+            content: "{{ states('sensor.solarbank_3_e2700_pro_solarleistung') | int }} W"
+            icon_color: amber
+          - type: template
+            icon: mdi:transmission-tower-import
+            content: "{{ states('sensor.smart_meter_netzbezug') | int }} W"
+            icon_color: >
+              {% if states('sensor.smart_meter_netzbezug') | int > 0 %}red{% else %}green{% endif %}
+          - type: template
+            icon: mdi:home-lightning-bolt
+            content: "{{ states('sensor.system_balkonkraft_stesch_hausbedarf') | int }} W"
+            icon_color: indigo
+          - type: template
+            icon: mdi:battery
+            content: "{{ states('sensor.solarbank_3_e2700_pro_ladestand') | int }}%"
+            icon_color: >
+              {% set s = states('sensor.solarbank_3_e2700_pro_ladestand') | int %}
+              {% if s > 70 %}green{% elif s > 30 %}orange{% else %}red{% endif %}
+          - type: template
+            icon: mdi:leaf
+            content: "{{ states('sensor.system_balkonkraft_stesch_co2_einsparung') | float | round(1) }} kg CO₂"
+            icon_color: teal
