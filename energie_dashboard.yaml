@@ -52,6 +52,14 @@ views:
             icon: mdi:leaf
             content: "{{ states('sensor.system_balkonkraft_stesch_co2_einsparung') | float | round(1) }} kg CO₂"
             icon_color: teal
+        card_mod:
+          style: |
+            ha-card {
+              background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+              border: 1px solid rgba(255,183,0,0.2);
+              border-radius: 20px;
+              padding: 4px 0;
+            }
 
       # ┌─────────────────────────────────────────────────────────┐
       # │  SEKTION 2 · LIVE KENNZAHLEN (4 Kacheln)                │
@@ -66,6 +74,14 @@ views:
             entity: sensor.solarbank_3_e2700_pro_solarleistung
             layout: vertical
             fill_container: true
+            card_mod:
+              style: |
+                ha-card {
+                  background: linear-gradient(135deg, rgba(255,183,0,0.12) 0%, rgba(13,17,23,0.97) 100%);
+                  border: 1px solid rgba(255,183,0,0.35);
+                  border-radius: 16px;
+                  box-shadow: 0 4px 15px rgba(255,183,0,0.08);
+                }
           - type: custom:mushroom-template-card
             primary: "{{ states('sensor.smart_meter_netzbezug') | int }} W"
             secondary: >
@@ -78,6 +94,14 @@ views:
             entity: sensor.smart_meter_netzbezug
             layout: vertical
             fill_container: true
+            card_mod:
+              style: |
+                ha-card {
+                  background: linear-gradient(135deg, rgba(231,76,60,0.12) 0%, rgba(13,17,23,0.97) 100%);
+                  border: 1px solid rgba(231,76,60,0.35);
+                  border-radius: 16px;
+                  box-shadow: 0 4px 15px rgba(231,76,60,0.08);
+                }
           - type: custom:mushroom-template-card
             primary: "{{ states('sensor.system_balkonkraft_stesch_hausbedarf') | int }} W"
             secondary: Hausbedarf
@@ -86,6 +110,14 @@ views:
             entity: sensor.system_balkonkraft_stesch_hausbedarf
             layout: vertical
             fill_container: true
+            card_mod:
+              style: |
+                ha-card {
+                  background: linear-gradient(135deg, rgba(108,92,231,0.12) 0%, rgba(13,17,23,0.97) 100%);
+                  border: 1px solid rgba(108,92,231,0.35);
+                  border-radius: 16px;
+                  box-shadow: 0 4px 15px rgba(108,92,231,0.08);
+                }
           - type: custom:mushroom-template-card
             primary: "{{ states('sensor.solarbank_3_e2700_pro_ladestand') | int }}%"
             secondary: "{{ states('sensor.solarbank_3_e2700_pro_akkuenergie') | int }} Wh"
@@ -101,6 +133,14 @@ views:
             entity: sensor.solarbank_3_e2700_pro_ladestand
             layout: vertical
             fill_container: true
+            card_mod:
+              style: |
+                ha-card {
+                  background: linear-gradient(135deg, rgba(52,152,219,0.12) 0%, rgba(13,17,23,0.97) 100%);
+                  border: 1px solid rgba(52,152,219,0.35);
+                  border-radius: 16px;
+                  box-shadow: 0 4px 15px rgba(52,152,219,0.08);
+                }
 
       # ┌─────────────────────────────────────────────────────────┐
       # │  SEKTION 3 · ENERGIEFLUSS                                │
@@ -476,7 +516,7 @@ views:
         cards:
           - type: markdown
             content: >
-              ## 🏆 Rekorde & Statistiken
+              <h2 style="color:#2ECC71; margin:4px 0">💰 Wirtschaftlichkeit & Umwelt</h2>
           - type: horizontal-stack
             cards:
               - type: custom:mushroom-template-card
@@ -487,6 +527,14 @@ views:
                 entity: sensor.system_balkonkraft_stesch_ertrag_gesamt
                 layout: vertical
                 fill_container: true
+                card_mod:
+                  style: |
+                    ha-card {
+                      background: linear-gradient(135deg, rgba(255,183,0,0.12) 0%, rgba(13,17,23,0.97) 100%);
+                      border: 1px solid rgba(255,183,0,0.35);
+                      border-radius: 16px;
+                      box-shadow: 0 4px 15px rgba(255,183,0,0.08);
+                    }
 
               - type: custom:mushroom-template-card
                 primary: "{{ states('sensor.system_balkonkraft_stesch_kostenersparnis') | float | round(2) }} €"
@@ -496,6 +544,14 @@ views:
                 entity: sensor.system_balkonkraft_stesch_kostenersparnis
                 layout: vertical
                 fill_container: true
+                card_mod:
+                  style: |
+                    ha-card {
+                      background: linear-gradient(135deg, rgba(46,204,113,0.12) 0%, rgba(13,17,23,0.97) 100%);
+                      border: 1px solid rgba(46,204,113,0.35);
+                      border-radius: 16px;
+                      box-shadow: 0 4px 15px rgba(46,204,113,0.08);
+                    }
 
               - type: custom:mushroom-template-card
                 primary: "{{ states('sensor.system_balkonkraft_stesch_ai_profit') | float | round(2) }} €"
@@ -505,6 +561,14 @@ views:
                 entity: sensor.system_balkonkraft_stesch_ai_profit
                 layout: vertical
                 fill_container: true
+                card_mod:
+                  style: |
+                    ha-card {
+                      background: linear-gradient(135deg, rgba(155,89,182,0.12) 0%, rgba(13,17,23,0.97) 100%);
+                      border: 1px solid rgba(155,89,182,0.35);
+                      border-radius: 16px;
+                      box-shadow: 0 4px 15px rgba(155,89,182,0.08);
+                    }
 
               - type: custom:mushroom-template-card
                 primary: "{{ states('sensor.system_balkonkraft_stesch_co2_einsparung') | float | round(1) }} kg"
@@ -514,6 +578,21 @@ views:
                 entity: sensor.system_balkonkraft_stesch_co2_einsparung
                 layout: vertical
                 fill_container: true
+                card_mod:
+                  style: |
+                    ha-card {
+                      background: linear-gradient(135deg, rgba(26,188,156,0.12) 0%, rgba(13,17,23,0.97) 100%);
+                      border: 1px solid rgba(26,188,156,0.35);
+                      border-radius: 16px;
+                      box-shadow: 0 4px 15px rgba(26,188,156,0.08);
+                    }
+        card_mod:
+          style: |
+            ha-card {
+              background: linear-gradient(180deg, #0d1117 0%, #161b22 100%);
+              border: 1px solid rgba(255,255,255,0.07);
+              border-radius: 20px;
+            }
 
       # ┌─────────────────────────────────────────────────────────┐
       # │  SEKTION 11 · STATISTIK BALKENDIAGRAMM (Rekord-Ansicht) │
@@ -625,7 +704,11 @@ views:
               extrema: true
             card_mod:
               style: |
-                ha-card { background: linear-gradient(135deg,#1a1a2e,#16213e); border-radius:16px; }
+                ha-card {
+                  background: linear-gradient(135deg, rgba(255,183,0,0.08), #0d1117);
+                  border: 1px solid rgba(255,183,0,0.3);
+                  border-radius: 16px;
+                }
 
           - type: custom:mini-graph-card
             entities:
@@ -644,6 +727,13 @@ views:
               legend: false
               fill: fade
               extrema: true
+            card_mod:
+              style: |
+                ha-card {
+                  background: linear-gradient(135deg, rgba(231,76,60,0.08), #0d1117);
+                  border: 1px solid rgba(231,76,60,0.3);
+                  border-radius: 16px;
+                }
 
           - type: custom:mini-graph-card
             entities:
@@ -662,6 +752,13 @@ views:
               legend: false
               fill: fade
               extrema: true
+            card_mod:
+              style: |
+                ha-card {
+                  background: linear-gradient(135deg, rgba(52,152,219,0.08), #0d1117);
+                  border: 1px solid rgba(52,152,219,0.3);
+                  border-radius: 16px;
+                }
 
       # ┌─────────────────────────────────────────────────────────┐
       # │  SEKTION 15 · TAGES-MAXIMA KOMPAKT (Heute vs. gestern)  │
@@ -726,7 +823,7 @@ views:
         cards:
           - type: markdown
             content: >
-              ## ⚡ Anker Solix Pro 3 – Heutige Spitzenwerte
+              <h2 style="color:#FFB700; margin:4px 0">⚡ Anker Solix Pro 3 – Heutige Spitzenwerte</h2>
           - type: horizontal-stack
             cards:
               # Solar Gesamt Tagesmax
@@ -932,6 +1029,13 @@ views:
                   xaxis:
                     labels:
                       format: "HH:mm"
+        card_mod:
+          style: |
+            ha-card {
+              background: linear-gradient(180deg, #0d1117 0%, #161b22 100%);
+              border: 1px solid rgba(255,255,255,0.07);
+              border-radius: 20px;
+            }
 
       # ┌─────────────────────────────────────────────────────────┐
       # │  SEKTION 17 · TAGES & WOCHEN MAXIMA – 4 GROSSE KACHELN  │
@@ -940,7 +1044,7 @@ views:
         mode: vertical
         cards:
           - type: markdown
-            content: "## 🏅 Tages- & Wochen-Maximalwerte"
+            content: "<h2 style=\"color:#FFB700; margin:4px 0\">🏅 Tages- & Wochen-Maximalwerte</h2>"
           - type: horizontal-stack
             cards:
               - type: custom:apexcharts-card
@@ -1037,6 +1141,13 @@ views:
                   xaxis:
                     labels:
                       formatter: "function(val) { var d=new Date(val); return d.toLocaleDateString('de-DE',{weekday:'short',day:'2-digit'}); }"
+        card_mod:
+          style: |
+            ha-card {
+              background: linear-gradient(180deg, #0d1117 0%, #161b22 100%);
+              border: 1px solid rgba(255,255,255,0.07);
+              border-radius: 20px;
+            }
 
       # ┌─────────────────────────────────────────────────────────┐
       # │  SEKTION 18 · 🏆 PV ANKER SOLIX PRO 3 – HIGHSCORE LISTE │
@@ -1047,7 +1158,7 @@ views:
         cards:
           - type: markdown
             content: >
-              ## 🏆 Anker Solix Pro 3 – PV Highscore
+              <h2 style="color:#FFB700; margin:4px 0">🏆 Anker Solix Pro 3 – PV Highscore</h2>
               **Tägliche Spitzenleistung** der letzten 90 Tage · automatisch aktualisiert
           - type: custom:apexcharts-card
             header:
@@ -1122,6 +1233,13 @@ views:
                         color: "#FFB700"
                         background: "transparent"
                         fontSize: "11px"
+        card_mod:
+          style: |
+            ha-card {
+              background: linear-gradient(135deg, rgba(255,183,0,0.06) 0%, #0d1117 60%);
+              border: 2px solid rgba(255,183,0,0.3);
+              border-radius: 20px;
+            }
 
       # ┌─────────────────────────────────────────────────────────┐
       # │  SEKTION 19 · WOCHEN RECORD KACHELN                      │
@@ -1379,6 +1497,13 @@ views:
               service: button.press
               target:
                 entity_id: button.solarbank_3_e2700_pro_details_aktualisieren
+        card_mod:
+          style: |
+            ha-card {
+              background: linear-gradient(135deg, rgba(255,183,0,0.06) 0%, #0d1117 60%);
+              border: 1px solid rgba(255,183,0,0.3);
+              border-radius: 16px;
+            }
 
       # ┌─────────────────────────────────────────────────────────┐
       # │  SEKTION 17 · SMART METER DETAILS                        │
@@ -1412,6 +1537,13 @@ views:
               service: button.press
               target:
                 entity_id: button.smart_meter_details_aktualisieren
+        card_mod:
+          style: |
+            ha-card {
+              background: linear-gradient(135deg, rgba(46,204,113,0.06) 0%, #0d1117 60%);
+              border: 1px solid rgba(46,204,113,0.3);
+              border-radius: 16px;
+            }
 
       # ┌─────────────────────────────────────────────────────────┐
       # │  SEKTION 18 · HAUSGERÄTE (Waschmaschine + Spülmaschine) │
